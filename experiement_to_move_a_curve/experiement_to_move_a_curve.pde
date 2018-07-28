@@ -1,14 +1,15 @@
-int aX, aY, bX, bY, ctrlaX, ctrlaY, ctrlbX, ctrlbY, changingFactor; 
+int aX, aY, bX, bY, ctrlaX, ctrlaY, ctrlbX, ctrlbY, changingFactor, distanceMousePoint, distancePointMouse; 
 float distFromA, distFromB; 
+boolean lockedPoint; 
 
 void setup(){
   size(600, 400); 
+  
+  //create shape
   aX = ctrlaX = 100; 
   aY = ctrlaY = bY = ctrlbY = 170;
   bX = ctrlbX = 400; 
-
-  
-  changingFactor = 2; 
+  changingFactor = 10; 
 }
 
 void draw(){
@@ -16,7 +17,7 @@ void draw(){
   stroke(255); 
   noFill();
   background(0); 
-  strokeWeight(4); 
+  strokeWeight(7); 
  
   
   point(ctrlaX, ctrlaY); 
@@ -27,27 +28,49 @@ void draw(){
   beginShape(); 
   strokeWeight(1);
   
-  
+//if the mouse is pressed, check in what direction it is going
+//then check the nearest point from the mouse
+//this point is then affected by the movement of the mouse
   if(mousePressed){
-        
-    distFromA = dist(aX, aY, mouseX, mouseY); 
-    distFromB = dist(bX, bY, mouseX, mouseY); 
-    if(distFromA < distFromB){
-      ctrlaX = mouseX * changingFactor; 
-      ctrlaY = mouseY * changingFactor; 
-    }else if(distFromA > distFromB){
-      ctrlbX = mouseX * changingFactor; 
-      ctrlbY = mouseY * changingFactor;
-    }else if(distFromA == distFromB){
-      ctrlaX = ctrlbX = mouseX * changingFactor; 
-      ctrlaY = ctrlbY = mouseY * changingFactor;
+   println("MouseX: ", mouseX, "MouseY: ", mouseY, "aX = ", aX, "aY = ", aY);
+    if(approxClickPoint() > 0){
+     // println("You are clicking on the point"); 
+      changePoint(approxClickPoint());   
+    }else{
+      if(lockedPoint == false){
+        changeCurve(); 
+      }
     }
-    
   }
   
-  curveVertex(ctrlaX, ctrlaY);
-  curveVertex(aX, aY);
-  curveVertex(bX, bY);
-  curveVertex(ctrlbX, ctrlbY);
+  drawVertex(); 
   endShape(); 
+}
+
+void mouseReleased(){
+  lockedPoint = false; 
+}
+
+int approxClickPoint()
+{
+  if( inRange(mouseX, aX) && inRange(mouseY, aY)){
+    return 1; 
+  }else if (inRange(mouseX, bX) && inRange(mouseY, bY)){
+    return 2; 
+  }else{
+    println("Noteu trou");
+    return 0; 
+  }
+}
+
+boolean inRange(int mouse, int point){
+  distanceMousePoint = mouse - point; 
+  distancePointMouse = point - mouse;
+  if(distanceMousePoint < 5 && distanceMousePoint > - 5){
+    return true; 
+  }else if (distancePointMouse < 5 && distancePointMouse > -5){
+    return true;
+  }else{
+    return false; 
+  }
 }
