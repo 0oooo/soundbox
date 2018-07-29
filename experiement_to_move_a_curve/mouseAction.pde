@@ -160,3 +160,27 @@ void changePoint(int side){
   }
   lockedPoint = true; 
 }
+
+
+int approxClickPoint()
+{
+  if( inRange(mouseX, aX) && inRange(mouseY, aY)){
+    return 1; 
+  }else if (inRange(mouseX, bX) && inRange(mouseY, bY)){
+    return 2; 
+  }else{
+    return 0; 
+  }
+}
+
+boolean inRange(int mouse, int point){
+  distanceMousePoint = mouse - point; 
+  distancePointMouse = point - mouse;
+  if(distanceMousePoint < 5 && distanceMousePoint > - 5){
+    return true; 
+  }else if (distancePointMouse < 5 && distancePointMouse > -5){
+    return true;
+  }else{
+    return false; 
+  }
+}
