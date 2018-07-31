@@ -1,42 +1,32 @@
-int aX, aY, bX, bY, ctrlaX, ctrlaY, ctrlbX, ctrlbY, changingFactor, distanceMousePoint, distancePointMouse; 
-float distFromA, distFromB; 
-boolean lockedPoint; 
+float aX, aY, bX, bY, cX, cY, dX, dY, 
+      changingFactor, distanceMouseVector, smallerDistance; 
+int counter, vectorIndex; 
+
+PVector closestVector;
+PShape s;
+
 
 void setup(){
-  size(600, 400); 
-  
-  //create shape
-  aX = ctrlaX = 100; 
-  aY = ctrlaY = bY = ctrlbY = 170;
-  bX = ctrlbX = 400; 
-  changingFactor = 10; 
+  size(600, 400, P2D); 
+
+  noLoop(); 
+  changingFactor = 1; 
+  randomCircle();   
 }
 
 void draw(){
+
+  background(51);
+  stroke(255);
+  strokeWeight(3); 
   
-  stroke(255); 
-  noFill();
-  background(0); 
+  //draw the shape
+  shape(s); 
   
-  strokeWeight(7); 
-  drawPoints();
- 
-  beginShape(); 
-  strokeWeight(1);
-  drawVertex(); 
-  endShape(); 
 }
+
 
 void mouseDragged(){
-  if(approxClickPoint() > 0){
-    changePoint(approxClickPoint());   
-  }else{
-    if(lockedPoint == false){
-      changeCurve(); 
-    }
-  }
-}
-
-void mouseReleased(){
-  lockedPoint = false; 
+    changeShape(); 
+    redraw();
 }
