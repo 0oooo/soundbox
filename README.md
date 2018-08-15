@@ -4,7 +4,7 @@ The goal of this project is to capture the movements of the sand (made by an aud
 
 ## Technical background
 
-This project uses processing 3, a Xbox one Kinect (or Kinect 2.0) connected to a windows machine (windows 10, ). Follow the instructions to install your Kinect: https://www.microsoft.com/en-us/download/details.aspx?id=44561
+This project uses processing 3, a Xbox one Kinect (or Kinect 2.0) connected to a windows machine (windows 10, graphic card: GeForce 1080ti). Follow the instructions to install your Kinect: https://www.microsoft.com/en-us/download/details.aspx?id=44561
 If you wish to use MacOS or Linux, a library exists https://github.com/OpenKinect/libfreenect2/blob/master/README.md which works for kinect 2. Another one exists for the version 1. 
 
 ## Process
