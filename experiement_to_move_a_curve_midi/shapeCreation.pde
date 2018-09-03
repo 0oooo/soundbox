@@ -21,11 +21,11 @@ int pixelCount(){
   int totalOfPixel = 0; 
   for(i = 0; i < width; i++ ){
     for (j = 0; j< height; j++){
-      if(get(i, j) != -13421773){
+      if(get(i, j) != BLACK){
         totalOfPixel += 1; 
       }
     }
   }
-  println("Total of grey pixels: ", totalOfPixel);
-   return totalOfPixel; 
+  //println("Total of grey pixels: ", totalOfPixel);
+  return totalOfPixel; 
 }
