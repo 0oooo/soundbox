@@ -240,3 +240,9 @@ void mouseReleased() {
 void mouseDragged() {
   mouseDragged = true;
 }
+
+
+// This function calculates the respective frequency of a MIDI note
+float midiToFreq(int note) {
+    return (pow(2, ((note-69)/12.0)))*440;
+}
