@@ -13,6 +13,7 @@ boolean isBackground(color col) {
 class Cluster {
   int highestLevel, h, w, id; 
   HashMap<String, Integer> pixelElements = new HashMap<String, Integer>(); 
+  String keyTest; 
 
   Cluster(int h, int w, int id) {
     this.h = h; 
@@ -23,6 +24,11 @@ class Cluster {
   void addPixel(int x, int y, int level) {
     String coordinates = str(x) + ":" + str(y); 
     pixelElements.put(coordinates, level);
+  }
+  
+  void setKeyTest(int x, int y){
+    String coordinates = str(x) + ":" + str(y); 
+    keyTest = coordinates; 
   }
 
   boolean hasPixel(int x, int y) {
@@ -56,6 +62,10 @@ class Cluster {
   
    HashMap<String, Integer> getPixels(){
      return pixelElements;
+   }
+   
+   String getKeyTest(){
+     return keyTest; 
    }
 
   int getSize() {
@@ -142,6 +152,7 @@ class ClusterFactory {
           // create new cluster 
           int id = clusterList.size() + 1; 
           Cluster newCluster = new Cluster(width, height, id);
+          newCluster.setKeyTest(x, y); 
           
           // put pixel in stack
           int[] coordinates = {x,y};

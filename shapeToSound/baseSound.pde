@@ -68,7 +68,7 @@ float[] noteToFrequency(String[] notes, String octave){
 
 float mapAreaToNote(String[] notes, String octave){
   //Cluster cluster1 = clusterCollection.getClusterById(1);
-  //int area = cluster1.getSize(); 
+  //int area = cluster1.getSize();
   int area = pixelCount(); 
   
   float[] baseNote = noteToFrequency(notes, octave);
