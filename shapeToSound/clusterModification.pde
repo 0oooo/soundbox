@@ -39,7 +39,7 @@ boolean mouseLeftTop(){
 }
 
 boolean mouseRightTop(){
-  if((mouseX > (width/2)) && (mouseY > (height/2))){
+  if((mouseX > (width/2)) && (mouseY <= (height/2))){
     return true;
   }else{
     return false; 
@@ -55,7 +55,7 @@ boolean mouseLeftBottom(){
 }
 
 boolean mouseRightBottom(){
-  if((mouseX > (width/2)) && (mouseY <= (height/2))){
+  if((mouseX > (width/2)) && (mouseY > (height/2))){
     return true;
   }else{
     return false; 

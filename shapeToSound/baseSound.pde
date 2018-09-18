@@ -44,10 +44,10 @@ class SineInstrument implements Instrument
 float pixelToSound(){
   
   float numberOfPixel = pixelCount(); 
-  println("Number of pixel inside pixelToSound " + numberOfPixel);
+  //println("Number of pixel inside pixelToSound " + numberOfPixel);
   int soundValueFromGreyPixels = round(map(numberOfPixel, 0, 240000, 55, 800));
   
-  println("sound value " + soundValueFromGreyPixels);
+  //println("sound value " + soundValueFromGreyPixels);
   
   return soundValueFromGreyPixels; 
 }
@@ -67,8 +67,9 @@ float[] noteToFrequency(String[] notes, String octave){
 
 
 float mapAreaToNote(String[] notes, String octave){
-  Cluster cluster1 = clusterCollection.getClusterById(1);
-  int area = cluster1.getSize(); 
+  //Cluster cluster1 = clusterCollection.getClusterById(1);
+  //int area = cluster1.getSize(); 
+  int area = pixelCount(); 
   
   float[] baseNote = noteToFrequency(notes, octave);
   // if the area is bigger or equal to the max a stack can reach, return the last note of the scale 

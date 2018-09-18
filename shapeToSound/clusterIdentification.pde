@@ -39,12 +39,34 @@ class Cluster {
       return false;
     }
   }
+  
+  boolean compareCluster(Cluster cluster2){
+    //for each pixel in the current hashmap 
+    //check if it;s in the second hashmap
+    HashMap<String, Integer> pixel2 = cluster2.getPixels();
+    for(HashMap.Entry me : pixelElements.entrySet()){
+      // /!\ Originally put String but didnt work. May be an issue later
+      Object pixel1 = me.getKey();  
+      if (pixel2.containsKey(pixel1)){
+        return true; 
+      }
+    }
+    return false; 
+  }           
+  
+   HashMap<String, Integer> getPixels(){
+     return pixelElements;
+   }
 
   int getSize() {
     return pixelElements.size();
   }
   
-  int getId(){
+  void setId(int id){
+    this.id = id; 
+  }
+  
+  public int getId(){
     return id; 
   }
   
@@ -62,9 +84,10 @@ class Cluster {
 
 class ClusterFactory {
 
-  ArrayList<Cluster> clusterList = new ArrayList<Cluster>(); 
+  ArrayList<Cluster> clusterList; 
+  int[][] surroundingPixels = {{-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1}};  
   boolean foundNeighbour = false; 
-  HashMap<String, Integer> visitedPixel = new HashMap<String, Integer>();
+  HashMap<String, Integer> visitedPixel;
   int w, h; 
   
   public ClusterFactory(int w, int h){
@@ -93,8 +116,9 @@ class ClusterFactory {
   }
 
   public ClusterCollection identifyClusters() {
-    int[][] surroundingPixels = {{-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1}};  
     Stack<int[]> stack = new Stack<int[]>();
+    clusterList = new ArrayList<Cluster>();
+    visitedPixel = new HashMap<String, Integer>();
     
     loadPixels();
     
@@ -115,7 +139,7 @@ class ClusterFactory {
           //set pixel as visited
           this.setVisited(x,y);
           
-          // create new cluster
+          // create new cluster 
           int id = clusterList.size() + 1; 
           Cluster newCluster = new Cluster(width, height, id);
           
@@ -157,30 +181,63 @@ class ClusterFactory {
         }
       }
     }
-    return new ClusterCollection(clusterList); 
+    return (new ClusterCollection(clusterList)); 
   }
 
 
   void displayClusters() {
-    println("You have detected " + str(clusterList.size()) + " clusters.");
+    println("You have detected " + str(clusterList.size()) + " clusters from the factory.");
   }
 }
 
-class ClusterCollection{
+
+
+class ClusterCollection {
   ArrayList<Cluster> clusterCollection; 
   
   public ClusterCollection(ArrayList<Cluster> clusters){
     clusterCollection = clusters; 
   }
   
+  public int getSize(){
+   return clusterCollection.size();
+  }
+  
+  boolean isEmpty(){
+    return (clusterCollection.size() <= 0); 
+  }
+  
   Cluster getClusterById(int id){
-    for(int i = 1; i < (clusterCollection.size() - 2); i++){
-      Cluster currentCluster = clusterCollection.get(i);
-      if(id == currentCluster.getId()){
-        return currentCluster;
+    if (!isEmpty()){
+      
+       for(int i = 0; i < clusterCollection.size() ; i++){
+        Cluster currentCluster = clusterCollection.get(i);
+        if(id == currentCluster.getId()){
+          return currentCluster;
+        }
       }
     }
+    println("cluster empty or id not found");
     return null; 
+  }
+  
+  public ArrayList<Cluster> getClusterCollection(){
+    if (clusterCollection.size() > 0){
+      return clusterCollection;
+    }else{
+      return null; 
+    }
+  }
+  
+  public void testClusterID(){
+    for(int i = 0; i < clusterCollection.size() ; i++){
+          Cluster currentCluster = clusterCollection.get(i);
+          println("Cluster " + i + " - Current ID: " + currentCluster.getId());
+    }
+  }
+  
+  void displayClusterCollection(){
+    println("You have detected " + str(clusterCollection.size()) + " clusters from the collection.");
   }
 
 }
