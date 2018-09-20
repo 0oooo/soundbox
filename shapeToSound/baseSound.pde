@@ -4,7 +4,6 @@ import ddf.minim.ugens.*;
 Minim minim; 
 AudioOutput out; 
 
-
 // to make an Instrument we must define a class
 // that implements the Instrument interface.
 class SineInstrument implements Instrument
@@ -40,55 +39,69 @@ class SineInstrument implements Instrument
   }
 }
 
-
-float pixelToSound(){
-  
-  float numberOfPixel = pixelCount(); 
-  //println("Number of pixel inside pixelToSound " + numberOfPixel);
-  int soundValueFromGreyPixels = round(map(numberOfPixel, 0, 240000, 55, 800));
-  
-  //println("sound value " + soundValueFromGreyPixels);
-  
-  return soundValueFromGreyPixels; 
-}
-
-
-float[] noteToFrequency(String[] notes, String octave){
-  
-  float[] baseNotes = new float[12];
-  
-  for( int i = 0; i < notes.length; i++){
-    String noteAndOctave = notes[i] + octave; 
-    float freq = Frequency.ofPitch(noteAndOctave).asHz(); 
-    baseNotes[i] = freq; 
+// This function calculates the respective frequency of a MIDI note
+float midiToFreq(int note) {
+    return (pow(2, ((note-69)/12.0)))*440;
   }
-    return baseNotes;
+
+// This function maps the area of a cluster to a midi note.
+// The maximum value the cluster can be in theory would be 
+//60 to 72 
+int mapAreaToMidiNote(int clusterArea, int w, int h, int numberOfClusters){
+  int maxArea = w * h; 
+  int maxAreaPerCluster = maxArea / numberOfClusters; 
+  int midiNote = round(map(clusterArea, 0, maxAreaPerCluster, 60, 72)); 
+  return midiNote;
 }
 
 
-float mapAreaToNote(String[] notes, String octave){
-  //Cluster cluster1 = clusterCollection.getClusterById(1);
-  //int area = cluster1.getSize();
-  int area = pixelCount(); 
+//float pixelToSound(){
   
-  float[] baseNote = noteToFrequency(notes, octave);
-  // if the area is bigger or equal to the max a stack can reach, return the last note of the scale 
-  if(area >= maxStackArea){
-    //println("Area is bigger or equal to max. Area: " + area + ". Max Area: " + maxStackArea);
-    noteUsed = notes[0];
-    return baseNote[0];
-  }if(area == 0){
-    //println("error");
-    return baseNote[0];
-  }else{
-    int proportion = round(maxStackArea / area);
-    //println("Area: " + area + ". Max Area: " + maxStackArea + ". Difference: " + proportion);
-    if(proportion >= 12){
-      noteUsed = notes[11]; 
-      return baseNote[11];
-    }else{
-      noteUsed = notes[proportion - 1];
-      return baseNote[proportion - 1];
-    }
-  }
-}
+//  float numberOfPixel = pixelCount(); 
+//  //println("Number of pixel inside pixelToSound " + numberOfPixel);
+//  int soundValueFromGreyPixels = round(map(numberOfPixel, 0, 240000, 55, 800));
+  
+//  //println("sound value " + soundValueFromGreyPixels);
+  
+//  return soundValueFromGreyPixels; 
+//}
+
+
+//float[] noteToFrequency(String[] notes, String octave){
+  
+//  float[] baseNotes = new float[12];
+  
+//  for( int i = 0; i < notes.length; i++){
+//    String noteAndOctave = notes[i] + octave; 
+//    float freq = Frequency.ofPitch(noteAndOctave).asHz(); 
+//    baseNotes[i] = freq; 
+//  }
+//    return baseNotes;
+//}
+
+//float mapAreaToNote(String[] notes, String octave){
+//  //Cluster cluster1 = clusterCollection.getClusterById(1);
+//  //int area = cluster1.getSize();
+//  int area = pixelCount(); 
+  
+//  float[] baseNote = noteToFrequency(notes, octave);
+//  // if the area is bigger or equal to the max a stack can reach, return the last note of the scale 
+//  if(area >= maxStackArea){
+//    //println("Area is bigger or equal to max. Area: " + area + ". Max Area: " + maxStackArea);
+//    noteUsed = notes[0];
+//    return baseNote[0];
+//  }if(area == 0){
+//    //println("error");
+//    return baseNote[0];
+//  }else{
+//    int proportion = round(maxStackArea / area);
+//    //println("Area: " + area + ". Max Area: " + maxStackArea + ". Difference: " + proportion);
+//    if(proportion >= 12){
+//      noteUsed = notes[11]; 
+//      return baseNote[11];
+//    }else{
+//      noteUsed = notes[proportion - 1];
+//      return baseNote[proportion - 1];
+//    }
+//  }
+//}

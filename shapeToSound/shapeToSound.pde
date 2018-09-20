@@ -5,7 +5,7 @@ float aX, aY, bX, bY, cX, cY, dX, dY,
 int counter, vectorIndex, area, maxStackArea, 
   numberOfClick; 
 
-int interval = 3000, 
+int interval = 1000, 
   trigger = 0; 
 
 //Black color in processing. 
@@ -21,6 +21,7 @@ boolean mouseClicked = false;
 float pixelToSound; 
 
 float baseFrequency; 
+int midiNote; 
 
 String[] noteScale = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
 String[] noteScaleInversed = {"B", "A#", "A", "G#", "G", "F#", "F", "E", "D#", "D", "C#", "C"};
@@ -64,6 +65,10 @@ void setup() {
 
   // use the getLineOut method of the Minim object to get an AudioOutput object
   out = minim.getLineOut();
+  
+  //
+ //nb: c3=48
+  midiNote = 60; 
 
   //create the base of the sound that is always active
   out.playNote( 0, 2.9, new SineInstrument( baseFrequency ) );
@@ -135,8 +140,13 @@ void draw() {
     }
   }
 
-  //check the clusters every 2000 ms 
+  //check the clusters every 1000 ms (can change interval)
   if (millis() > trigger) {
+    
+    /* ---------------------------------------------------------------------------------- 
+                         IDENTIFICATION OF CLUSTERS OF PIXELS
+       ---------------------------------------------------------------------------------- */
+       
     //get a new "picture" of the clusters
     newClusters = clusterFactory.identifyClusters();
     println("-------------------------- NEW PICTURE ---------------------------------------");
@@ -146,7 +156,6 @@ void draw() {
     ArrayList<Cluster> unidentified = new ArrayList<Cluster>();
 
     if (newClusters.getSize() == 0) {
-      println("No new clusters, the old ones are set to null");
       currentClusters = null;
     
     } else  {
@@ -248,11 +257,14 @@ void draw() {
           identified.clear();
         }//end of copying identified list into a ClusterCollection
 
-
-        //checks 
-        //clusterFactory.displayClusters();
-        //newClusters.displayClusterCollection();
       }//end of checking there is at least one cluster in the new image
+      
+      
+      /* -------------------------------------------------------------------------------
+                             SOUND GENERATION BASED ON CLUSTER 1 
+        -------------------------------------------------------------------------------- */
+        float freq = midiToFreq(midiNote); 
+        //float baseFrequency = mapAreaToNote
 
 
 
@@ -284,10 +296,4 @@ void draw() {
 
   void mouseDragged() {
     mouseDragged = true;
-  }
-
-
-  // This function calculates the respective frequency of a MIDI note
-  float midiToFreq(int note) {
-    return (pow(2, ((note-69)/12.0)))*440;
   }
