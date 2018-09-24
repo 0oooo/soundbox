@@ -23,10 +23,6 @@ float pixelToSound;
 float baseFrequency; 
 int midiNote; 
 
-String[] noteScale = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
-String[] noteScaleInversed = {"B", "A#", "A", "G#", "G", "F#", "F", "E", "D#", "D", "C#", "C"};
-String noteUsed; 
-
 PImage img;
 
 ClusterFactory clusterFactory;
@@ -34,6 +30,10 @@ ClusterCollection currentClusters, newClusters;
 
 boolean similarClusters = false; 
 
+Sequencer sequencer = new Sequencer(200);
+BaseSound baseInstrument; 
+
+HashMap<Integer, Integer> parameters = new HashMap<Integer, Integer>(); 
 
 void setup() {
 
@@ -60,18 +60,12 @@ void setup() {
   s3 = randomCircle(width/2, height/2, 0, height/2, s3);
   s4 = randomCircle(width/2, height/2, width/2, height/2, s4);
 
-  //initialize the minim for the sound 
-  minim = new Minim(this);
-
-  // use the getLineOut method of the Minim object to get an AudioOutput object
-  out = minim.getLineOut();
+  // This instrument implements the SequencerObserverInterface
+  baseInstrument = new BaseSound(this);
   
-  //
- //nb: c3=48
-  midiNote = 60; 
+  // Tell the instrument to listen to the sequencer
+  sequencer.addObserver(baseInstrument, 1); 
 
-  //create the base of the sound that is always active
-  out.playNote( 0, 2.9, new SineInstrument( baseFrequency ) );
 }
 
 void draw() {
@@ -127,7 +121,6 @@ void draw() {
   if (mouseDragged == true) {
     if (mouseLeftTop()) {
       changeShape(s1);
-      pixelToSound();
     }
     if (mouseRightTop()) {
       changeShape(s2);
@@ -258,24 +251,33 @@ void draw() {
         }//end of copying identified list into a ClusterCollection
 
       }//end of checking there is at least one cluster in the new image
-      
-      
-      /* -------------------------------------------------------------------------------
-                             SOUND GENERATION BASED ON CLUSTER 1 
-        -------------------------------------------------------------------------------- */
-        float freq = midiToFreq(midiNote); 
-        //float baseFrequency = mapAreaToNote
-
-
-
+     
       trigger = millis() + interval;
     }
+    
+    
+    
+    if(currentClusters == null || currentClusters.isEmpty()){
+      parameters.clear();
+    }else{
+      ArrayList<Cluster> clusters = currentClusters.getClusterCollection();
+      for (Cluster c: clusters){
+        int id = c.getId(); 
+        int area = c.getNumberOfPixels(); 
+        parameters.put(id, area); 
+      }
+    }
+    
+    /* -------------------------------------------------------------------------------
+                           SOUND GENERATION BASED ON CLUSTER 1 
+      -------------------------------------------------------------------------------- */
+
+      sequencer.tick(parameters);
 
     //if the mouse has been dragged and release, call the new sound
     if (changeSound == true) {
       //map the area of grey pixel to the frequency to be played
-      float freq = mapAreaToNote(noteScaleInversed, "4");
-      out.playNote( 0, 2.9, new SineInstrument( freq ) );
+
       changeSound = false;
     }
   }

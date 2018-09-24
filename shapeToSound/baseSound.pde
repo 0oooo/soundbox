@@ -1,76 +1,73 @@
-import ddf.minim.*;
-import ddf.minim.ugens.*;
+class BaseSound implements InstrumentInterface {
 
-Minim minim; 
-AudioOutput out; 
+  SawOsc osc;
+  Env env; 
 
-// to make an Instrument we must define a class
-// that implements the Instrument interface.
-class SineInstrument implements Instrument
-{
-  Oscil wave;
-  Line  ampEnv;
-  
-  SineInstrument( float frequency )
-  {
-    // make a sine wave oscillator
-    // the amplitude is zero because 
-    // we are going to patch a Line to it anyway
-    wave   = new Oscil( frequency, 0, Waves.SINE );
-    ampEnv = new Line();
-    ampEnv.patch( wave.amplitude );
+  public BaseSound(PApplet parent) {
+    this.osc = new SawOsc(parent);
+    this.env  = new Env(parent);
   }
-   
-  // this is called by the sequencer when this instrument
-  // should start making sound. the duration is expressed in seconds.
-  void noteOn( float duration )
-  {
-    // start the amplitude envelope
-    ampEnv.activate( duration, 0.5f, 0 );
-    // attach the oscil to the output so it makes sound
-    wave.patch( out );
+
+  public int getInstrumentId() {
+    // needs to be implemented
+    return 1;
   }
-  
-  // this is called by the sequencer when the instrument should
-  // stop making sound
-  void noteOff()
-  {
-    wave.unpatch( out );
+
+  public void instrumentPlay(int beat, int bar, HashMap<String, Integer> parameters) {
+    println("TriSequence - beat: " + beat + " bar: " + bar);
+    if(beat == 1){
+      this.osc.freq(
+        midiToFreq(
+          mapAreaToMidiNote(
+            parameters.get("clusterArea"), 
+            parameters.get("w"), 
+            parameters.get("h")
+           )
+          )
+         );
+      this.env.play(this.osc, 0.0, 0.2, 0.1, 0.4);
+    }
+  }
+
+  // This function maps the area of a cluster to a midi note.
+  // The maximum area for a cluster in theory would be the area of the box
+  // We divide that area by the number of clusters 
+  // to give each clusters the same max area they can extend to
+  // The starting midi notes are 60 to 72 
+  public int mapAreaToMidiNote(int clusterArea, int w, int h) {
+    int maxArea = w * h; 
+    int maxAreaPerCluster = maxArea / 4; 
+    int midiNote = round(map(clusterArea, 0, maxAreaPerCluster, 60, 72)); 
+    println("+++++++++++++++++++++++++++++++++++++++++++++++");
+    println("Current area of the cluster 1: " + clusterArea); 
+    println("Note played is : " + midiNote); 
+    println("+++++++++++++++++++++++++++++++++++++++++++++++");
+    return midiNote;
   }
 }
 
 // This function calculates the respective frequency of a MIDI note
 float midiToFreq(int note) {
-    return (pow(2, ((note-69)/12.0)))*440;
-  }
-
-// This function maps the area of a cluster to a midi note.
-// The maximum value the cluster can be in theory would be 
-//60 to 72 
-int mapAreaToMidiNote(int clusterArea, int w, int h, int numberOfClusters){
-  int maxArea = w * h; 
-  int maxAreaPerCluster = maxArea / numberOfClusters; 
-  int midiNote = round(map(clusterArea, 0, maxAreaPerCluster, 60, 72)); 
-  return midiNote;
+  return (pow(2, ((note-69)/12.0)))*440;
 }
 
 
 //float pixelToSound(){
-  
+
 //  float numberOfPixel = pixelCount(); 
 //  //println("Number of pixel inside pixelToSound " + numberOfPixel);
 //  int soundValueFromGreyPixels = round(map(numberOfPixel, 0, 240000, 55, 800));
-  
+
 //  //println("sound value " + soundValueFromGreyPixels);
-  
+
 //  return soundValueFromGreyPixels; 
 //}
 
 
 //float[] noteToFrequency(String[] notes, String octave){
-  
+
 //  float[] baseNotes = new float[12];
-  
+
 //  for( int i = 0; i < notes.length; i++){
 //    String noteAndOctave = notes[i] + octave; 
 //    float freq = Frequency.ofPitch(noteAndOctave).asHz(); 
@@ -83,7 +80,7 @@ int mapAreaToMidiNote(int clusterArea, int w, int h, int numberOfClusters){
 //  //Cluster cluster1 = clusterCollection.getClusterById(1);
 //  //int area = cluster1.getSize();
 //  int area = pixelCount(); 
-  
+
 //  float[] baseNote = noteToFrequency(notes, octave);
 //  // if the area is bigger or equal to the max a stack can reach, return the last note of the scale 
 //  if(area >= maxStackArea){
