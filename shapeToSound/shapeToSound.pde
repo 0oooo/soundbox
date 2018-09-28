@@ -76,6 +76,7 @@ void draw() {
   strokeWeight(3); 
 
   //draw the shape
+  //use switch(numberOfClick)instead?
   if (numberOfClick == 1) {
     shape(s1);
   }
