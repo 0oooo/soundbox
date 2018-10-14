@@ -1,4 +1,5 @@
-import processing.sound.*; //<>// //<>// //<>//
+import processing.sound.*; //<>//
+
 
 float aX, aY, bX, bY, cX, cY, dX, dY, 
   changingFactor, distanceMouseVector, smallerDistance; 
@@ -77,45 +78,47 @@ void draw() {
 
   //draw the shape
   //use switch(numberOfClick)instead?
-  if (numberOfClick == 1) {
-    shape(s1);
-  }
-  if (numberOfClick == 2) {
-    shape(s1);
-    shape(s2);
-  }
-  if (numberOfClick == 3) {
-    shape(s1);
-    shape(s2);
-    shape(s3);
-  }
-  if (numberOfClick == 4) {
-    shape(s1);
-    shape(s2);
-    shape(s3);
-    shape(s4);
-  }
-  if (numberOfClick == 5) {
-    shape(s2);
-    shape(s3);
-    shape(s4);
-  }
-  if (numberOfClick == 6) {
-    shape(s3);
-    shape(s4);
-  }
-  if (numberOfClick == 7) {
-    shape(s4);
-  }
-  if (numberOfClick == 8) {
-  }
-  if (numberOfClick == 9) {
-    shape(s1);
-    shape(s3);
-    shape(s4);
-  }
-  if (numberOfClick == 10) {
-    shape(s4);
+  switch(numberOfClick){
+    case 1: 
+            shape(s1);
+            break;
+    case 2:
+            shape(s1);
+            shape(s2);
+            break;
+    case 3: 
+            shape(s1);
+            shape(s2);
+            shape(s3);
+            break;
+    case 4: 
+            shape(s1);
+            shape(s2);
+            shape(s3);
+            shape(s4);
+            break;
+    case 5: 
+            shape(s2);
+            shape(s3);
+            shape(s4);
+            break;
+    case 6:
+            shape(s3);
+            shape(s4);
+            break;
+    case 7: 
+            shape(s4);
+            break;
+    case 8: 
+      break;
+    case 9:
+            shape(s1);
+            shape(s3);
+            shape(s4);
+            break;
+    case 10: 
+            shape(s4);
+            break;
   }
 
   //change the shape in link with mouse movements
@@ -143,7 +146,6 @@ void draw() {
        
     //get a new "picture" of the clusters
     newClusters = clusterFactory.identifyClusters();
-    println("-------------------------- NEW PICTURE ---------------------------------------");
 
     //To differenciate the existing clusters and new ones, need 2 array lists to keep track of
     HashMap<Integer, Cluster> identified = new HashMap<Integer, Cluster>();  
@@ -153,10 +155,8 @@ void draw() {
       currentClusters = null;
     
     } else  {
-        println("~ At least one cluster has been identified in new picture ~");
         //first time we go through: 
         if (currentClusters == null ) {
-          println("~~ First time we go through, new is copied in current ~~");
           currentClusters = newClusters;   //type: ClusterCollection 
 
           //all the other times, compare the clusters of the current "picture" with the old picture to update them
@@ -164,8 +164,6 @@ void draw() {
 
           ArrayList<Cluster> newListClusters = newClusters.getClusterCollection();
           ArrayList<Cluster> currListClusters = currentClusters.getClusterCollection();
-          println("The new list is made of " + newListClusters.size() );
-          println("The old list is made of " + currListClusters.size() );
 
           //for each new cluster in the new picture
           println("\n**** Cluster Comparison / Identification ****\n");
@@ -181,11 +179,9 @@ void draw() {
               // comparing C2 with C1 that has already been compared and find similar to a new C1
               int currId = currCluster.getId();
               if (identified.get(currId) != null) {
-                println("The id of the old picture cluster is already in identified"); 
 
                 //TODO check if this is not a pb with different sizes
                 if ( currListClusters.size() == identified.size()) {
-                  println("But it was the last element of the old cluster list to compare to so we add the new one to unindetified");
                   unidentified.add(newCluster);
                   break;
                 } else {
@@ -198,8 +194,6 @@ void draw() {
                 boolean foundSimilarPixel = newCluster.compareCluster(currCluster); 
                 similarClusters = foundSimilarPixel;
                 if (foundSimilarPixel) {
-                  println("Found pixels in common for 2 clusters. \nOld cluster number: " + currCluster.getId() + " and new cluster number:" +  newCluster.getId());
-                  println("Proof\nKey old: " + currCluster.getKeyTest() + "\nNew key: " + newCluster.getKeyTest() ); 
                   //get the ID from the current (old) cluster, set it to the new one, and put them in the identified list
                   int newId = currCluster.getId(); 
                   newCluster.setId(newId); 
@@ -211,8 +205,6 @@ void draw() {
 
             //if newCluster has compared all the old ones and didn't find a similarity, add to the unidentified list
             if (!similarClusters) {
-              println("New cluster number: " + newCluster.getId() + " has no similarity with old ones. Added to unidentified.");
-              println("\nNew key: " + newCluster.getKeyTest() ); 
               unidentified.add(newCluster);
             }
           }//end of new cluster list
@@ -221,7 +213,6 @@ void draw() {
 
         //if the unidentified is not empty, needs to reassign an id to them
         println("1. (should be numbers of new cluster) Unidentified : " + unidentified.size());
-        println("2. (should be numbers of similar cluster) Identified : " + identified.size());
         if ( unidentified.size()> 0) {
           //find the smallest ID not in used in the identified list
           int min = 1; 
@@ -244,7 +235,6 @@ void draw() {
         if ( identified.size() > 0) {       // Create an arrayList of all the clusters in the identified list                                         
           // source https://crunchify.com/how-to-convert-hashmap-to-arraylist-in-java/
           ArrayList<Cluster> clusterList = new ArrayList<Cluster>(identified.values());
-          println("Size of my new array list to copy in curr : "  + clusterList.size() );
 
           // push the final arrayList to be the new currentClusters
           currentClusters = new ClusterCollection(clusterList);

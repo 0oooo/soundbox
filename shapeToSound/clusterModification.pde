@@ -113,23 +113,3 @@ void changeShape(PShape shape)
     shape.setVertex(index, v.x, v.y);
   } 
 }
-
-
-//no used now but could be later. 
-//void getCircumferance(PShape shape){
-//   float[] vectorSizes = new float[shape.getVertexCount()];
-//   float pastX = shape.getVertex(0).x; 
-//   float pastY = shape.getVertex(0).y; 
-//   float surface = 0;
-   
-//   for(int i = 1; i < shape.getVertexCount(); i++){
-//    PVector v = shape.getVertex(i);  
-//  //  println(i, ": ", v); 
-
-//    float d = dist(pastX, pastY, shape.getVertex(i).x, shape.getVertex(0).y);
-//    surface += d; 
-//    pastX = shape.getVertex(i).x; 
-//    pastY = shape.getVertex(i).y;    
-//   }
-//   println(surface); 
-//}
